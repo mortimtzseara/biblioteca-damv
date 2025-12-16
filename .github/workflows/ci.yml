@@ -1,1 +1,30 @@
-patata
+name: CI/CD Pipeline - Biblioteca DAM
+
+on:
+  push:
+    branches: [ "main" ]  # S'executa en fer push a la branca "main"
+
+jobs:
+  build-and-test:
+    name: Build i Anàlisi de Qualitat
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v4  # Baixa el codi del repositori
+
+    - name: Configurar .NET SDK
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x  # Canvia per la versió que utilitzis (6.0.x, 7.0.x, etc.)
+
+    - name: Restaurar dependències
+      run: dotnet restore
+
+    - name: Compilar el projecte
+      run: dotnet build --configuration Release --no-restore
+
+    - name: Executar tests
+      run: dotnet test --no-build --verbosity normal
+
+    - name: Publicar el projecte
+      run: dotnet publish --configuration Release --output ./publish
